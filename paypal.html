@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IndieArt Commission - Pago con PayPal</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+        h1 { text-align: center; margin-bottom: 20px; color: #333; }
+        .product-info { margin-bottom: 20px; }
+        .product-info h2 { margin-bottom: 10px; }
+        .product-info p { color: #555; }
+        #paypal-button-container { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Comisiones</h1>
+        <div class="product-info">
+            <h2>Pintura Personalizada</h2>
+            <p>Precio: <strong>$50.00 USD</strong></p>
+            <p>Descripción: Una obra de arte personalizada hecha a tu medida.</p>
+        </div>
+        <div id="paypal-button-container"></div>
+    </div>
+
+    <script src="https://www.paypal.com/sdk/js?client-id=Aekvcb03jGCDUxkraQpXSk5J5C8AD4ZpJr68JQ4IlLVDOsPy-CXT9ejxG1IiP-kF6WgEhX950IY9fgCy&currency=USD"></script>
+    <script>
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: '50.00' // Precio de la comisión
+                        }
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    alert('Pago completado por ' + details.payer.name.given_name);
+                    // redirigir o guardar la transacción a mi base de datos
+                });
+            },
+            onError: function(err) {
+                console.error('Error en el pago:', err);
+                alert('Hubo un problema con el pago. Por favor, inténtalo de nuevo.');
+            }
+        }).render('#paypal-button-container');
+    </script>
+</body>
+</html>
